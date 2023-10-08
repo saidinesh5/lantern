@@ -19,3 +19,7 @@ SHOW hnsw.init_k;
 -- Reset all parameters and verify that hnsw.init_k was reset
 RESET ALL;
 SHOW hnsw.init_k;
+
+-- Modify hnsw.ef and verify that it was modified
+SET hnsw.ef = 250;
+SHOW hnsw.ef;
