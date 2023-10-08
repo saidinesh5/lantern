@@ -29,6 +29,9 @@ static relopt_kind ldb_hnsw_index_withopts;
 
 int ldb_hnsw_init_k;
 
+// Runtime override for ef_search
+int ldb_hnsw_ef;
+
 // this variable is only set during testing and controls whether
 // certain elog() calls are made
 // see ldb_dlog() definition and callsites for details
@@ -58,6 +61,7 @@ int ldb_HnswGetEfConstruction(Relation index)
 int ldb_HnswGetEf(Relation index)
 {
     ldb_HnswOptions *opts = (ldb_HnswOptions *)index->rd_options;
+    if(ldb_hnsw_ef >= 1 && ldb_hnsw_ef <= HNSW_MAX_EF) return ldb_hnsw_ef;
     if(opts) return opts->ef;
     return HNSW_DEFAULT_EF;
 }
@@ -214,6 +218,19 @@ void _PG_init(void)
                             LDB_HNSW_DEFAULT_K,
                             1,
                             LDB_HNSW_MAX_K,
+                            PGC_USERSET,
+                            0,
+                            NULL,
+                            NULL,
+                            NULL);
+
+    DefineCustomIntVariable("hnsw.ef",
+                            "HNSW ef search hyperparameter",
+                            "Valid values are in range [1, 1000]",
+                            &ldb_hnsw_ef,
+                            -1,
+                            1,
+                            HNSW_MAX_EF,
                             PGC_USERSET,
                             0,
                             NULL,

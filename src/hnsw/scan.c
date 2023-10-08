@@ -50,6 +50,7 @@ IndexScanDesc ldb_ambeginscan(Relation index, int nkeys, int norderbys)
     dimensions = headerp->vector_dim;
 
     opts.connectivity = headerp->m;
+    //TODO: See if we should re-index the db or can directly use the options: ldb_hnsw_ef variable
     opts.expansion_add = headerp->ef_construction;
     opts.expansion_search = headerp->ef;
     opts.metric_kind = headerp->metric_kind;
